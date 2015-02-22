@@ -1,0 +1,23 @@
+In this simulation, we assume two sliding windows are readable, and they act in FIFO.
+
+To Run the simulation, simply run "file".
+
+- file.c      : contains the code of "file"
+- command     : IO file of the program
+- stuckDET.sh : Bash Shell script to monitor if the attacker falls into an "infinite loop"
+
+The attacker performs the attack by taking advantage of a format string memory leak vulnerable and a stack overflow vulnerable.
+
+Attacker first read out from the stack the stack canary, ret address( to main ), address of the shellcode, and an address belongs to libc.
+
+Then, attacker constructs the payload, and overflows a "char buf[810]" buffer.
+
+In the payload construction, it trys to find the "mprotect" function to make the shellcode executable. ( Since DEP is Enabled. )
+
+In this attack, the attacking iterates through the libc to find a "ret" so that when "ret"ed from libc, this page can be loaded into the sliding window.
+
+It then tries to find the "mprotect" function in this page. If found, it again overflows to get the exploit done.
+
+To be noted :
+    The memory leak happens in the stack area, which is not protected by the XnR. Thus we can bypass XnR.
+    The "ret" prob actually happens in "main", when returning from the "cProc" function. So the read page (from libc) will remain in the sliding window when we copy this page out and do the finding.

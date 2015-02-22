@@ -1,0 +1,6 @@
+
+This attack simulation is basically the same as the "file/" simulation.
+
+The only difference is that, this attack iterates the libc address in a reversed way.
+
+The purpose is to void away the "kill" function in libc, which will exit the whole process if accidentally ret to that address.
